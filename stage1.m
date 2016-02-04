@@ -26,9 +26,8 @@ for column_num = 1:column_count
     rows_inspected = 0;
     row_num = 1;
     while row_num < row_count
-        % If the current cell being inspected is 0 and it's not in the 
-        % last row
-        if and(U(row_num, column_num) == 0, row_num ~= row_count)
+        % If the current cell being inspected is 0
+        if U(row_num, column_num) == 0
             % Save the row to a temp vector
             temp = U(row_num, :);
             
@@ -43,7 +42,7 @@ for column_num = 1:column_count
             % If there are lots of zeroes, we may end up continously moving
             % the current row to the bottom in an infinite loop.  We can
             % avoid this with the following break
-            if rows_inspected > row_count
+            if rows_inspected == row_count - 1
                break; 
             end      
         else          
