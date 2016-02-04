@@ -1,6 +1,6 @@
 function [ U ] = stage1( A )
 %stage1 Converts a real, square matrix to upper echelon form
-%   Detailed explanation goes here
+%   Converts a real, square matrix to upper echelon form, if possible
 
 
 % Check that it's square
@@ -15,11 +15,6 @@ for index = 1:numel(A)
         error('Input matrix has imaginary number(s)')
     end
 end
-
-% Transform to upper echelon form
-    % Get Row 2 -> n to have col 1 start with a 0
-    % Get Row 3 -> n to have col 1 & 2 start with a 0
-    % Get Row n-1 -> n to have col 1->n-1 start with a 0
 
 row_count = dimensions(1,1);
 column_count = dimensions(1,2);
