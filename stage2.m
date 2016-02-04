@@ -10,11 +10,23 @@ if dimensions(1,1) ~= dimensions(1,2)
     error('Input coefficient matrix is not square')
 end
 
+% Check that b is the right size
+if length(b) ~= dimensions(1,1)
+   error('Input values matrix is not the correct size') 
+end
+
 % Check that A contains only real numbers
 for index = 1:numel(A)
     if A(index)*A(index) < 0
         error('Input coefficient matrix has imaginary number(s)')
     end
+end
+
+% Check that b contains only real numbers
+for index = 1:length(b)
+   if b(index)*b(index) < 0
+       error('Input solution vector has imaginary number(s)');
+   end
 end
 
 row_count = dimensions(1,1);
@@ -30,15 +42,18 @@ for column_num = 1:column_count
         % If the current cell being inspected is 0
         if U(row_num, column_num) == 0
             % Save the row to a temp vector
-            temp = U(row_num, :);
+            temp_A = U(row_num, :);
+            temp_b = b(row_num);
             
             % Shift all rows below it up one
             for row_below = row_num + 1:row_count
                 U(row_below - 1, :) = U(row_below, :);
+                b(row_below-1) = b(row_below);
             end
             
             % Shift the current row to the bottom
-            U(row_count, :) = temp;
+            U(row_count, :) = temp_A;
+            b(row_count) = temp_b;
                         
             % If there are lots of zeroes, we may end up continously moving
             % the current row to the bottom in an infinite loop.  We can
@@ -87,9 +102,11 @@ for column_inspecting = 1:column_count
             end
             
             multiplication_factor = cell_value_in_current_row / cell_value_in_mutator_row;
-            mutator_row = U(mutator_row_number, :) .* multiplication_factor;
+            mutator_row_A = U(mutator_row_number, :) .* multiplication_factor;
+            mutator_row_b = b(mutator_row_number) .* multiplication_factor;
             
-            U(row_inspecting, :) = U(row_inspecting, :) - mutator_row;
+            U(row_inspecting, :) = U(row_inspecting, :) - mutator_row_A;
+            b(row_inspecting) = b(row_inspecting) - mutator_row_b;
         end
     end
 end
@@ -97,9 +114,28 @@ end
 
 % Check that no rows contain only 0's (if they do, it's not full rank)
 if U(row_count, column_count) == 0
-    fprintf('Matrix does not have full rank.')
-else
-    fprintf('Matrix has full rank.')
+    error('Cannot solve.  Matrix does not have full rank')
+end
+
+fprintf('Matrix has full rank. Solving via back substitution.')
+
+% Solve from last row back to first...
+x = zeros(row_count,1);
+row_solving = row_count;
+
+while row_solving >= 1
+    value_of_row_after_unknown = 0;
+    
+    column_index = row_solving;
+    while column_index <= column_count
+        value_of_row_after_unknown = value_of_row_after_unknown + (U(row_solving, column_index) * x(column_index));
+        
+        column_index = column_index + 1;
+    end
+    
+    x(row_solving) = (b(row_solving) - value_of_row_after_unknown) / U(row_solving, row_solving);
+    
+    row_solving = row_solving - 1;
 end
 
 end
