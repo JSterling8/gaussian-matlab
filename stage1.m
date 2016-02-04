@@ -41,7 +41,7 @@ for column_num = 1:column_count
                         
             % If there are lots of zeroes, we may end up continously moving
             % the current row to the bottom in an infinite loop.  We can
-            % avoid this with the following break
+            % avoid this with the following if/break
             if rows_inspected == row_count - 1
                break; 
             end      
@@ -55,11 +55,17 @@ end
 
 % For each column, 1->n
 for column_inspecting = 1:column_count
-    % Use the first row to mutate the first column, second row when
-    % mutating second column, etc...
-    mutator_row_number = column_inspecting;
     % For each row from 2->n
     for row_inspecting = 2:row_count
+        
+        % Make mutator/pivot row be the biggest above the current row being inspected 
+        mutator_row_number = column_inspecting;
+        for mutator_row_number_search = row_inspecting - 1:1
+            if abs(U(mutator_row_number_search, column_inspecting)) > abs(U(mutator_row_number, column_inspecting))
+                mutator_row_number = mutator_row_number_search;
+            end
+        end
+        
         % If the column we're looking at is under the diagonal
         if column_inspecting < row_inspecting
             % Make that cell 0 using the mutator row.  As long as we use
