@@ -12,7 +12,7 @@ end
 
 % Check that b is the right size
 if length(b) ~= dimensions(1,1)
-   error('Input values matrix is not the correct size') 
+   error('Input values vector is not the correct size') 
 end
 
 % Check that A contains only real numbers
@@ -25,7 +25,7 @@ end
 % Check that b contains only real numbers
 for index = 1:length(b)
    if b(index)*b(index) < 0
-       error('Input solution vector has imaginary number(s)');
+       error('Input values vector has imaginary number(s)');
    end
 end
 
