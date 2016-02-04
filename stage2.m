@@ -113,8 +113,18 @@ end
 
 
 % Check that no rows contain only 0's (if they do, it's not full rank)
-if U(row_count, column_count) == 0
-    error('Cannot solve.  Matrix does not have full rank')
+for rank_check_row = 1:row_count
+    num_zeroes_in_row = 0;
+    
+    for rank_check_column = 1:column_count
+        if U(rank_check_row, rank_check_column) == 0
+            num_zeroes_in_row = num_zeroes_in_row + 1; 
+        end
+    end
+    
+    if num_zeroes_in_row == column_count
+       error('Cannot solve.  Matrix does not have full rank')
+    end
 end
 
 fprintf('Matrix has full rank. Solving via back substitution.')

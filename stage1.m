@@ -95,9 +95,26 @@ end
 
 
 % Check that no rows contain only 0's (if they do, it's not full rank)
-if U(row_count, column_count) == 0
-    fprintf('Matrix does not have full rank.')
-else
+full_rank = 1;
+for rank_check_row = 1:row_count
+    num_zeroes_in_row = 0;
+    
+    for rank_check_column = 1:column_count
+        if U(rank_check_row, rank_check_column) == 0
+            num_zeroes_in_row = num_zeroes_in_row + 1; 
+        end
+    end
+    
+    if num_zeroes_in_row == column_count
+       fprintf('Matrix does not have full rank')
+       
+       full_rank = 0;
+       
+       break;
+    end
+end
+
+if full_rank == 1
     fprintf('Matrix has full rank.')
 end
 
