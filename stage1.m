@@ -21,34 +21,30 @@ row_count = dimensions(1,1);
 column_count = dimensions(1,2);
 U = A;
 
-% Put largest cell values onto diagonal (we'll use the diagonal for our 
-% pivot later)
-for column_num = 1:column_count-1
-    row_inspecting = column_num;
-    row_with_pivot = column_num;
-    
-    while row_inspecting <= row_count
-        if U(row_inspecting, column_num) > U(row_with_pivot, column_num)
-            row_with_pivot = row_inspecting;
-        end
-        
-        row_inspecting = row_inspecting + 1;
-    end
-    
-    % Swap the row with the largest pivot for the current column into place
-    if(column_num == row_with_pivot)
-       % Do nothing... It's already in the right place 
-    else 
-        temp = U(row_with_pivot, :);
-        U(row_with_pivot, :) = U(column_num, :);
-        U(column_num, :) = temp;
-    end
-end
-
 % For each column, 1->n
 for column_inspecting = 1:column_count
     % Make mutator/pivot be U(n,n) (because that's the largest pivot 
     % as we set it to be so earlier 
+    mutator_row_number = column_inspecting;
+    
+    % Pick the largest pivot/mutator at or below the existing 
+    % mutator_row_number
+    for row_inspecting = mutator_row_number:row_count
+        if U(row_inspecting, column_inspecting) > U(mutator_row_number, column_inspecting)
+           mutator_row_number = row_inspecting;
+        end
+    end
+    
+    % Swap the mutator row so the pivot is on the diagonal
+    if mutator_row_number == column_inspecting
+        % Do nothing... It's already on the diagonal
+    else 
+       temp = U(mutator_row_number, :);
+       U(mutator_row_number, :) = U(column_inspecting, :);
+       U(column_inspecting, :) = temp;
+    end
+    
+    % Set the mutator_row_number to be the diagonal again
     mutator_row_number = column_inspecting;
     
     % For each row from 2->n
