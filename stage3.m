@@ -66,13 +66,12 @@ end
 
 % For each column, 1->n
 for column_inspecting = 1:column_count
+    % Make mutator/pivot be U(n,n) (because that's the largest pivot 
+    % as we set it to be so earlier 
+    mutator_row_number = column_inspecting;
+    
     % For each row from 2->n
-    for row_inspecting = 2:row_count
-        
-        % Make mutator/pivot be U(n,n) (because that's the largest pivot 
-        % as we set it to be so earlier 
-        mutator_row_number = column_inspecting;
-        
+    for row_inspecting = 2:row_count        
         % If the column we're looking at is under the diagonal
         if column_inspecting < row_inspecting
             % Make that cell 0 using the mutator row.  As long as we use
