@@ -87,10 +87,16 @@ for column_inspecting = 1:column_count
                 error('Not enough info to convert to upper echelon form.')
             end
             
+            % Find out what we have to divide our mutator row by in order
+            % to create a 0 in the row/column inspecting
             multiplication_factor = cell_value_in_current_row / cell_value_in_mutator_row;
+            
+            % Create the transformed mutator rows, using our multiplication
+            % factor
             mutator_row_A = U(mutator_row_number, :) .* multiplication_factor;
             mutator_row_b = b(mutator_row_number) .* multiplication_factor;
             
+            % Subtract our mutator row from the row we're inspecting
             U(row_inspecting, :) = U(row_inspecting, :) - mutator_row_A;
             b(row_inspecting) = b(row_inspecting) - mutator_row_b;
         end

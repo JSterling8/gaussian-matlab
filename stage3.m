@@ -1,8 +1,7 @@
-function [ x ] = stage3( A, b )
+function [ x ] = stage2( A, b )
 %stage1 Solves for x in equation Ax = b
 %   Returns a solution vector given a coefficient matrix and
-%   right-hand-side values.  Uses back substitution, partial pivoting, and
-%   scaling
+%   right-hand-side values
 
 tic
 
@@ -68,7 +67,7 @@ for column_inspecting = 1:column_count
     mutator_row_number = column_inspecting;
     
     % For each row from 2->n
-    for row_inspecting = 2:row_count        
+    for row_inspecting = 2:row_count     
         % If the column we're looking at is under the diagonal
         if column_inspecting < row_inspecting
             % Make that cell 0 using the mutator row.  As long as we use
@@ -88,16 +87,21 @@ for column_inspecting = 1:column_count
                 error('Not enough info to convert to upper echelon form.')
             end
             
+            % Find out what we have to divide our mutator row by in order
+            % to create a 0 in the row/column inspecting
             multiplication_factor = cell_value_in_current_row / cell_value_in_mutator_row;
+            
+            % Create the transformed mutator rows, using our multiplication
+            % factor
             mutator_row_A = U(mutator_row_number, :) .* multiplication_factor;
             mutator_row_b = b(mutator_row_number) .* multiplication_factor;
             
+            % Subtract our mutator row from the row we're inspecting
             U(row_inspecting, :) = U(row_inspecting, :) - mutator_row_A;
             b(row_inspecting) = b(row_inspecting) - mutator_row_b;
         end
     end
 end
-
 
 % Check that no rows contain only 0's (if they do, it's not full rank)
 rank_check_row = row_count;
