@@ -84,7 +84,9 @@ end
 
 % Check that no rows contain only 0's (if they do, it's not full rank)
 full_rank = 1;
-for rank_check_row = 1:row_count
+rank_check_row = row_count;
+
+while rank_check_row >= 1;
     num_zeroes_in_row = 0;
     
     for rank_check_column = 1:column_count
@@ -100,6 +102,8 @@ for rank_check_row = 1:row_count
        
        break;
     end
+    
+    rank_check_row = rank_check_row - 1;
 end
 
 if full_rank == 1
