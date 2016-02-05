@@ -4,9 +4,14 @@ function tests = stage3Tests
     testTenByTenZeroValueMatrix();
     testOneByOneMatrix();
     testOneByOneZeroValueMatrix();
-    testNonRealNumbersFail();
+    testNonRealNumbersInAFails();
+    testNonRealNumbersInbFails()
     testNxMFails();
     testCorrectXValuesReturned100x100();
+    testIncorrectSizeOfbFails();
+    testPartialRankFails();
+    testTwoByTwoMatrix();
+    testRandomNByNTest();
     testCorrectXValuesReturned1000x1000();
 end
 
@@ -124,6 +129,53 @@ function testMandatoryRowSwap()
     fprintf('Mandatory row swap test complete\n\n')
 end
 
+function testPartialRankFails()
+    fprintf('Beginning partial rank test\n')
+    tic
+    
+    caught = 0;
+    try
+        A = [1, 1, 1; 2.5, 2.5, 2.5; 4, 5, 6];
+        % Row one will have to be moved to the bottom.
+        b = [4; 3; 2];
+
+        stage3(A, b);
+    catch
+        caught = 1;
+    end
+    
+    assert(caught == 1, 'No error thrown for input with partial rank!');
+    
+    toc
+    fprintf('Partial rank test complete\n\n')
+end
+
+function testTwoByTwoMatrix()
+    fprintf('Beginning 2x2 test.  Will test with 10 random 2x2 matrices\n')
+    tic
+    
+    for i = 1:10
+        A = rand(2) .* 100;
+        while rank(A) ~= 2
+            A = rand(1) .* 100;
+        end
+        b = rand(2,1) .* 100;
+        x = A\b;
+
+        x_calc = stage3(A, b);
+
+        tolerance = 0.00000001;
+        for row = 1:2
+          if abs(x(row)) - abs (x_calc(row)) > tolerance
+              error('Calculated incorrect solution');
+          end
+        end
+    end
+    
+    toc
+    fprintf('2x2 test passed\n\n')
+end
+
 function testNxMFails()
     fprintf('Beginning NxM test (asserting error thrown).\n')
     tic
@@ -131,7 +183,9 @@ function testNxMFails()
     caught = 0;
     try
         A = zeros(5,4);
-        stage3(A);
+        b = zeros(5,1);
+        
+        stage3(A, b);
     catch
         caught = 1;
     end
@@ -141,22 +195,97 @@ function testNxMFails()
     fprintf('NxM test passed\n\n')
 end
 
-function testNonRealNumbersFail()
-    fprintf('Beginning non-real number test (asserting error thrown).\n')
+function testIncorrectSizeOfbFails()
+    fprintf('Beginning b size test (checks both too big and too small) (asserting error thrown).\n')
+    tic
+    
+    caught = 0;
+    try
+        A = zeros(5,5);
+        b = zeros(4,1);
+        stage3(A, b);
+    catch
+        caught = 1;
+    end
+    assert(caught == 1, 'No error was thrown for invalid b vector input (b too small)');
+    
+    try
+        A = zeros(5,5);
+        b = zeros(7,1);
+        stage3(A, b);
+    catch
+        caught = 1;
+    end
+    assert(caught == 1, 'No error was thrown for invalid b vector input (b too big)');
+    
+    toc
+    fprintf('b size test passed\n\n')
+end
+
+function testNonRealNumbersInAFails()
+    fprintf('Beginning non-real numbers in A test (asserting error thrown).\n')
     tic
     
     caught = 0;
     try
         A = zeros(5,5);
         A(3,3) = 5i;
-        stage3(A);
+        b = zeros(5,1);
+        stage3(A, b);
     catch
         caught = 1;
     end
     assert(caught == 1, 'No error was thrown for non-real matrix input');
     
     toc
-    fprintf('Non-real number test test passed\n\n')
+    fprintf('Non-real numbers in A test passed\n\n')
+end
+
+function testNonRealNumbersInbFails()
+    fprintf('Beginning non-real numbers in b test (asserting error thrown).\n')
+    tic
+    
+    caught = 0;
+    try
+        A = zeros(5,5);
+        b = zeros(5,1);
+        b(1) = 1i;
+        stage3(A, b);
+    catch
+        caught = 1;
+    end
+    assert(caught == 1, 'No error was thrown for non-real vector input');
+    
+    toc
+    fprintf('Non-real numbers in b test passed\n\n')
+end
+
+function testRandomNByNTest()
+    fprintf('Beginning random NxN test.  Will test with 100 random NxN matrices\n')
+    tic
+    
+    for i = 1:100
+        size = floor(rand(1) * 100);
+
+        A = rand(size) .* 100;
+        while rank(A) ~= size
+            A = rand(size) .* 100;
+        end
+        b = rand(size,1) .* 100;
+        x = A\b;
+
+        x_calc = stage3(A, b);
+
+        tolerance = 0.00000001;
+        for row = 1:size
+          if abs(x(row)) - abs (x_calc(row)) > tolerance
+              error('Calculated incorrect solution');
+          end
+        end
+    end
+    
+    toc
+    fprintf('Random NxN test passed\n\n')
 end
 
 function testCorrectXValuesReturned1000x1000()
