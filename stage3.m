@@ -1,4 +1,4 @@
-function [ x ] = stage2( A, b )
+function [ x ] = stage3( A, b )
 %stage1 Solves for x in equation Ax = b
 %   Returns a solution vector given a coefficient matrix and
 %   right-hand-side values
