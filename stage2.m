@@ -3,6 +3,7 @@ function [ x ] = stage2( A, b )
 %   Returns a solution vector given a coefficient matrix and
 %   right-hand-side values
 
+tic
 
 % Check that it's square
 dimensions = size(A);
@@ -127,7 +128,7 @@ for rank_check_row = 1:row_count
     end
 end
 
-fprintf('Matrix has full rank. Solving via back substitution.')
+fprintf('Matrix has full rank. Solving via back substitution.\n')
 
 % Solve from last row back to first...
 x = zeros(row_count,1);
@@ -147,6 +148,8 @@ while row_solving >= 1
     
     row_solving = row_solving - 1;
 end
+
+toc
 
 end
 

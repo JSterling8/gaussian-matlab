@@ -2,6 +2,7 @@ function [ U ] = stage1( A )
 %stage1 Converts a real, square matrix to upper echelon form
 %   Converts a real, square matrix to upper echelon form, if possible
 
+tic
 
 % Check that it's square
 dimensions = size(A);
@@ -106,7 +107,7 @@ for rank_check_row = 1:row_count
     end
     
     if num_zeroes_in_row == column_count
-       fprintf('Matrix does not have full rank')
+       fprintf('Matrix does not have full rank \n')
        
        full_rank = 0;
        
@@ -115,8 +116,10 @@ for rank_check_row = 1:row_count
 end
 
 if full_rank == 1
-    fprintf('Matrix has full rank.')
+    fprintf('Matrix has full rank.\n')
 end
+
+toc
 
 end
 
