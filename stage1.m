@@ -21,36 +21,27 @@ row_count = dimensions(1,1);
 column_count = dimensions(1,2);
 U = A;
 
-% Move rows with 0s to the end, such that the higher the column number of 
-% the cell conaining a 0, the further down the row is in the matrix
-for column_num = 1:column_count
-    rows_inspected = 0;
-    row_num = 1;
-    while row_num < row_count
-        % If the current cell being inspected is 0
-        if U(row_num, column_num) == 0
-            % Save the row to a temp vector
-            temp = U(row_num, :);
-            
-            % Shift all rows below it up one
-            for row_below = row_num + 1:row_count
-                U(row_below - 1, :) = U(row_below, :);
-            end
-            
-            % Shift the current row to the bottom
-            U(row_count, :) = temp;
-                        
-            % If there are lots of zeroes, we may end up continously moving
-            % the current row to the bottom in an infinite loop.  We can
-            % avoid this with the following if/break
-            if rows_inspected == row_count - 1
-               break; 
-            end      
-        else          
-            row_num = row_num + 1;
+% Put largest cell values onto diagonal (we'll use the diagonal for our 
+% pivot later)
+for column_num = 1:column_count-1
+    row_inspecting = column_num;
+    row_with_pivot = column_num;
+    
+    while row_inspecting <= row_count
+        if U(row_inspecting, column_num) > U(row_with_pivot, column_num)
+            row_with_pivot = row_inspecting;
         end
         
-        rows_inspected = rows_inspected + 1;
+        row_inspecting = row_inspecting + 1;
+    end
+    
+    % Swap the row with the largest pivot for the current column into place
+    if(column_num == row_with_pivot)
+       % Do nothing... It's already in the right place 
+    else 
+        temp = U(row_with_pivot, :);
+        U(row_with_pivot, :) = U(column_num, :);
+        U(column_num, :) = temp;
     end
 end
 
@@ -59,13 +50,9 @@ for column_inspecting = 1:column_count
     % For each row from 2->n
     for row_inspecting = 2:row_count
         
-        % Make mutator/pivot row be the biggest above the current row being inspected 
+        % Make mutator/pivot be U(n,n) (because that's the largest pivot 
+        % as we set it to be so earlier 
         mutator_row_number = column_inspecting;
-        for mutator_row_number_search = row_inspecting - 1:1
-            if abs(U(mutator_row_number_search, column_inspecting)) > abs(U(mutator_row_number, column_inspecting))
-                mutator_row_number = mutator_row_number_search;
-            end
-        end
         
         % If the column we're looking at is under the diagonal
         if column_inspecting < row_inspecting
