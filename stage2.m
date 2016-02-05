@@ -127,9 +127,13 @@ function [ x ] = stage2( A, b )
     row_solving = row_count;
 
     while row_solving >= 1
+        % If we're solving for X1 in (#1*X1 + #2*X2 + #3*X3 = 4),
+        % calculate #2*X2 and #3*X3, subtract that value from both sides of
+        % the equation, then divide both sides by #1 to get the value of X1
+        
         value_of_row_after_unknown = 0;
-
         column_index = row_solving;
+        
         while column_index <= column_count
             value_of_row_after_unknown = value_of_row_after_unknown + (U(row_solving, column_index) * x(column_index));
 
