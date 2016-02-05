@@ -1,5 +1,5 @@
 %% Main function to generate tests
-function tests = stage3Test
+function tests = stage3Tests
     testTenByTenZeroValueMatrix();
     testOneByOneMatrix();
     testOneByOneZeroValueMatrix();
