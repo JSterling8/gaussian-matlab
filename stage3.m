@@ -30,7 +30,7 @@ function [ x ] = stage3( A, b )
 
     row_count = dimensions(1,1);
     column_count = dimensions(1,2);
-    U = A;
+    AUG = [A,b];
 
     % For each column, 1->n
     for column_inspecting = 1:column_count
@@ -40,7 +40,7 @@ function [ x ] = stage3( A, b )
         % Pick the largest pivot/mutator at or below the existing 
         % mutator_row_number
         for row_inspecting = column_inspecting:row_count
-            if U(row_inspecting, column_inspecting) > U(mutator_row_number, column_inspecting)
+            if AUG(row_inspecting, column_inspecting) > AUG(mutator_row_number, column_inspecting)
                mutator_row_number = row_inspecting;
             end
         end
@@ -49,16 +49,13 @@ function [ x ] = stage3( A, b )
         if mutator_row_number == column_inspecting
             % Do nothing... It's already on the diagonal
         else 
-           temp_A = U(mutator_row_number, :);
-           temp_b = b(mutator_row_number);
+           temp_A = AUG(mutator_row_number, :);
 
            % Move diagonal row to old pivotal row
-           U(mutator_row_number, :) = U(column_inspecting, :);
-           b(mutator_row_number) = b(column_inspecting);
+           AUG(mutator_row_number, :) = AUG(column_inspecting, :);
 
            % Move pivotal row to diagonal row
-           U(column_inspecting, :) = temp_A;
-           b(column_inspecting) = temp_b;
+           AUG(column_inspecting, :) = temp_A;
         end
 
         % Set the mutator_row_number to be the diagonal again
@@ -71,14 +68,14 @@ function [ x ] = stage3( A, b )
                 % Make that cell 0 using the mutator row.  As long as we use
                 % a row above the current row, we'll never unset a 0
                 % in a previous column
-                cell_value_in_current_row = U(row_inspecting, column_inspecting);
+                cell_value_in_current_row = AUG(row_inspecting, column_inspecting);
 
                 % If it's already 0, we don't have to do anything
                 if cell_value_in_current_row == 0
                     continue
                 end
 
-                cell_value_in_mutator_row = U(mutator_row_number, column_inspecting);
+                cell_value_in_mutator_row = AUG(mutator_row_number, column_inspecting);
 
                 % We can't divide by 0... This state *should* never happen
                 if cell_value_in_mutator_row == 0
@@ -91,12 +88,10 @@ function [ x ] = stage3( A, b )
 
                 % Create the transformed mutator rows, using our multiplication
                 % factor
-                mutator_row_A = U(mutator_row_number, :) .* multiplication_factor;
-                mutator_row_b = b(mutator_row_number) .* multiplication_factor;
+                mutator_row_A = AUG(mutator_row_number, :) .* multiplication_factor;
 
                 % Subtract our mutator row from the row we're inspecting
-                U(row_inspecting, :) = U(row_inspecting, :) - mutator_row_A;
-                b(row_inspecting) = b(row_inspecting) - mutator_row_b;
+                AUG(row_inspecting, :) = AUG(row_inspecting, :) - mutator_row_A;
             end
         end
     end
@@ -105,7 +100,7 @@ function [ x ] = stage3( A, b )
     % product of its diagonal)
     diagonal_product = 1;
     for index = 1:row_count
-        diagonal_product = diagonal_product * U(index, index);
+        diagonal_product = diagonal_product * AUG(index, index);
     end
     
     if diagonal_product == 0
@@ -127,14 +122,13 @@ function [ x ] = stage3( A, b )
         column_index = row_solving + 1;
         
         while column_index <= column_count
-            value_of_row_after_unknown = value_of_row_after_unknown + (U(row_solving, column_index) * x(column_index));
+            value_of_row_after_unknown = value_of_row_after_unknown + (AUG(row_solving, column_index) * x(column_index));
 
             column_index = column_index + 1;
         end
 
-        x(row_solving) = (b(row_solving) - value_of_row_after_unknown) / U(row_solving, row_solving);
+        x(row_solving) = (AUG(row_solving, column_count + 1) - value_of_row_after_unknown) / AUG(row_solving, row_solving);
 
         row_solving = row_solving - 1;
     end
 end
-
