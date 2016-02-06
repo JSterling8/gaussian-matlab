@@ -65,9 +65,7 @@ function [ x ] = stage3( A, b )
         for row_inspecting = 2:row_count     
             % If the column we're looking at is under the diagonal
             if column_inspecting < row_inspecting
-                % Make that cell 0 using the mutator row.  As long as we use
-                % a row above the current row, we'll never unset a 0
-                % in a previous column
+                % Make that cell 0 using the mutator row.
                 cell_value_in_current_row = AUG(row_inspecting, column_inspecting);
 
                 % If it's already 0, we don't have to do anything
