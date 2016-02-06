@@ -31,7 +31,7 @@ function testOneByOneMatrix()
         b = rand(1,1) .* 100;
         x = A\b;
 
-        x_calc = stage3(A, b);
+        x_calc = stage2(A, b);
 
         tolerance = 0.00000001;
         for row = 1:1
@@ -54,7 +54,7 @@ function testSmallNumbersExampleFromLecture()
     b = [1; -50];
     x = A\b;
     
-    x_calc = stage3(A, b);
+    x_calc = stage2(A, b);
     
     tolerance = 0.00000001;
     for row = 1:2
@@ -76,7 +76,7 @@ function testSuperSmallNumbers()
     b = [1; -50];
     x = A\b;
     
-    x_calc = stage3(A, b);
+    x_calc = stage2(A, b);
     
     tolerance = 0.00000001;
     for row = 1:2
@@ -98,7 +98,7 @@ function testOneByOneZeroValueMatrix()
     A = zeros(1,1);
     b = zeros(1,1);
     
-    x_calc = stage3(A, b);
+    x_calc = stage2(A, b);
     catch
         caught = 1;
     end
@@ -118,7 +118,7 @@ function testTenByTenZeroValueMatrix()
     A = zeros(10,10);
     b = zeros(10,1);
 
-    x_calc = stage3(A, b);
+    x_calc = stage2(A, b);
     catch
         caught = 1;
     end
@@ -141,7 +141,7 @@ function testCorrectXValuesReturned100x100()
         b = rand(100,1) .* 100;
         x = A\b;
 
-        x_calc = stage3(A, b);
+        x_calc = stage2(A, b);
 
         tolerance = 0.00000001;
         for row = 1:100
@@ -164,7 +164,7 @@ function testMandatoryRowSwap()
     b = [4; 3; 2];
     x = A\b;
     
-    x_calc = stage3(A, b);
+    x_calc = stage2(A, b);
     
     tolerance = 0.00000001;
     for row = 1:3
@@ -187,7 +187,7 @@ function testPartialRankFails()
         % Row one will have to be moved to the bottom.
         b = [4; 3; 2];
 
-        stage3(A, b);
+        stage2(A, b);
     catch
         caught = 1;
     end
@@ -210,7 +210,7 @@ function testTwoByTwoMatrix()
         b = rand(2,1) .* 100;
         x = A\b;
 
-        x_calc = stage3(A, b);
+        x_calc = stage2(A, b);
 
         tolerance = 0.00000001;
         for row = 1:2
@@ -233,7 +233,7 @@ function testNxMFails()
         A = zeros(5,4);
         b = zeros(5,1);
         
-        stage3(A, b);
+        stage2(A, b);
     catch
         caught = 1;
     end
@@ -251,7 +251,7 @@ function testIncorrectSizeOfbFails()
     try
         A = zeros(5,5);
         b = zeros(4,1);
-        stage3(A, b);
+        stage2(A, b);
     catch
         caught = 1;
     end
@@ -260,7 +260,7 @@ function testIncorrectSizeOfbFails()
     try
         A = zeros(5,5);
         b = zeros(7,1);
-        stage3(A, b);
+        stage2(A, b);
     catch
         caught = 1;
     end
@@ -279,7 +279,7 @@ function testNonRealNumbersInAFails()
         A = zeros(5,5);
         A(3,3) = 5i;
         b = zeros(5,1);
-        stage3(A, b);
+        stage2(A, b);
     catch
         caught = 1;
     end
@@ -298,7 +298,7 @@ function testNonRealNumbersInbFails()
         A = zeros(5,5);
         b = zeros(5,1);
         b(1) = 1i;
-        stage3(A, b);
+        stage2(A, b);
     catch
         caught = 1;
     end
@@ -322,7 +322,7 @@ function testRandomNByNTest()
         b = rand(size,1) .* 100;
         x = A\b;
 
-        x_calc = stage3(A, b);
+        x_calc = stage2(A, b);
 
         tolerance = 0.00000001;
         for row = 1:size
@@ -347,7 +347,7 @@ function testCorrectXValuesReturned1000x1000()
     b = rand(1000,1) .* 100;
     x = A\b;
 
-    x_calc = stage3(A, b);
+    x_calc = stage2(A, b);
 
     tolerance = 0.00000001;
     for row = 1:1000

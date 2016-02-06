@@ -80,34 +80,16 @@ function [ U ] = stage1( A )
         end
     end
 
-
-    % Check that no rows contain only 0's (if they do, it's not full rank)
-    full_rank = 1;
-    rank_check_row = row_count;
-
-    % Check the last row first, because it's the one most likely contain
-    % only 0's
-    while rank_check_row >= 1;
-        num_zeroes_in_row = 0;
-
-        for rank_check_column = 1:column_count
-            if U(rank_check_row, rank_check_column) == 0
-                num_zeroes_in_row = num_zeroes_in_row + 1; 
-            end
-        end
-
-        if num_zeroes_in_row == column_count
-           fprintf('Matrix does not have full rank \n')
-
-           full_rank = 0;
-
-           break;
-        end
-
-        rank_check_row = rank_check_row - 1;
+    % Determine if matrix is full rank by calculating it's determinant (the
+    % product of its diagonal)
+    diagonal_product = 1;
+    for index = 1:row_count
+        diagonal_product = diagonal_product * U(index, index);
     end
-
-    if full_rank == 1
+    
+    if diagonal_product == 0
+        fprintf('Matrix does not have full rank \n')
+    else
         fprintf('Matrix has full rank.\n')
     end
 end
