@@ -1,6 +1,9 @@
 %% Main function to generate tests
 function tests = stage3Tests
+    fprintf('Running all tests...\n\n')
     testMandatoryRowSwap();
+    testSmallNumbersExampleFromLecture();
+    testSuperSmallNumbers();
     testTenByTenZeroValueMatrix();
     testOneByOneMatrix();
     testOneByOneZeroValueMatrix();
@@ -13,6 +16,7 @@ function tests = stage3Tests
     testTwoByTwoMatrix();
     testRandomNByNTest();
     testCorrectXValuesReturned1000x1000();
+    fprintf('All tests passed!\n\n')
 end
 
 function testOneByOneMatrix()
@@ -39,6 +43,50 @@ function testOneByOneMatrix()
     
     toc
     fprintf('1x1 test passed\n\n')
+end
+
+function testSmallNumbersExampleFromLecture()
+    fprintf('Beginning small numbers test\n')
+    tic
+    % The following won't have a solution unless a row swap occurs:
+    A = [0.001, 0.995; -10.2, 1.00;];
+    % Row one will have to be moved to the bottom.
+    b = [1; -50];
+    x = A\b;
+    
+    x_calc = stage3(A, b);
+    
+    tolerance = 0.00000001;
+    for row = 1:2
+      if abs(x(row)) - abs (x_calc(row)) > tolerance
+          error('Calculated incorrect solution');
+      end
+    end
+    
+    toc
+    fprintf('Small numbers test complete\n\n')
+end
+
+function testSuperSmallNumbers()
+    fprintf('Beginning super small numbers test\n')
+    tic
+    % The following won't have a solution unless a row swap occurs:
+    A = [0.0000001, 0.00000995; -10.2, 1.00;];
+    % Row one will have to be moved to the bottom.
+    b = [1; -50];
+    x = A\b;
+    
+    x_calc = stage3(A, b);
+    
+    tolerance = 0.00000001;
+    for row = 1:2
+      if abs(x(row)) - abs (x_calc(row)) > tolerance
+          error('Calculated incorrect solution');
+      end
+    end
+    
+    toc
+    fprintf('Super small numbers test complete\n\n')
 end
 
 function testOneByOneZeroValueMatrix()
