@@ -104,6 +104,8 @@ function [ x ] = stage2( A, b )
     % Check that no rows contain only 0's (if they do, it's not full rank)
     rank_check_row = row_count;
 
+    % Check the last row first, because it's the one most likely contain
+    % only 0's
     while rank_check_row >= 1
         num_zeroes_in_row = 0;
 
@@ -132,7 +134,7 @@ function [ x ] = stage2( A, b )
         % the equation, then divide both sides by #1 to get the value of X1
         
         value_of_row_after_unknown = 0;
-        column_index = row_solving;
+        column_index = row_solving + 1;
         
         while column_index <= column_count
             value_of_row_after_unknown = value_of_row_after_unknown + (U(row_solving, column_index) * x(column_index));

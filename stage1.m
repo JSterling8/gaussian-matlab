@@ -85,6 +85,8 @@ function [ U ] = stage1( A )
     full_rank = 1;
     rank_check_row = row_count;
 
+    % Check the last row first, because it's the one most likely contain
+    % only 0's
     while rank_check_row >= 1;
         num_zeroes_in_row = 0;
 
