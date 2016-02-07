@@ -48,9 +48,7 @@ end
 function testSmallNumbersExampleFromLecture()
     fprintf('Beginning small numbers test\n')
     tic
-    % The following won't have a solution unless a row swap occurs:
     A = [0.001, 0.995; -10.2, 1.00;];
-    % Row one will have to be moved to the bottom.
     b = [1; -50];
     x = A\b;
     
@@ -70,9 +68,8 @@ end
 function testSuperSmallNumbers()
     fprintf('Beginning super small numbers test\n')
     tic
-    % The following won't have a solution unless a row swap occurs:
+    
     A = [0.0000001, 0.00000995; -10.2, 1.00;];
-    % Row one will have to be moved to the bottom.
     b = [1; -50];
     x = A\b;
     

@@ -1,5 +1,6 @@
+
 %% Main function to generate tests
-function tests = stage3Tests
+function tests = stage1Tests
     fprintf('Running all tests...\n\n')
     testMandatoryRowSwap();
     testSmallNumbersExampleFromLecture();
@@ -24,68 +25,15 @@ function testOneByOneMatrix()
     tic
     
     for i = 1:10
-        A = rand(1) .* 100;
-        while rank(A) ~= 1
-            A = rand(1) .* 100;
-        end
-        b = rand(1,1) .* 100;
-        x = A\b;
-
-        x_calc = stage3(A, b);
-
-        tolerance = 0.00000001;
-        for row = 1:1
-          if abs(x(row)) - abs (x_calc(row)) > tolerance
-              error('Calculated incorrect solution');
-          end
-        end
+        value = rand(1) .* 100;
+        A = value;
+        upper = stage1(A);
+        
+        assert(upper(1) == value;
     end
     
     toc
     fprintf('1x1 test passed\n\n')
-end
-
-function testSmallNumbersExampleFromLecture()
-    fprintf('Beginning small numbers test\n')
-    tic
-
-    A = [0.001, 0.995; -10.2, 1.00;];
-    b = [1; -50];
-    x = A\b;
-    
-    x_calc = stage3(A, b);
-    
-    tolerance = 0.00000001;
-    for row = 1:2
-      if abs(x(row)) - abs (x_calc(row)) > tolerance
-          error('Calculated incorrect solution');
-      end
-    end
-    
-    toc
-    fprintf('Small numbers test complete\n\n')
-end
-
-function testSuperSmallNumbers()
-    fprintf('Beginning super small numbers test\n')
-    tic
-    % The following won't have a solution unless a row swap occurs:
-    A = [0.0000001, 0.00000995; -10.2, 1.00;];
-    % Row one will have to be moved to the bottom.
-    b = [1; -50];
-    x = A\b;
-    
-    x_calc = stage3(A, b);
-    
-    tolerance = 0.00000001;
-    for row = 1:2
-      if abs(x(row)) - abs (x_calc(row)) > tolerance
-          error('Calculated incorrect solution');
-      end
-    end
-    
-    toc
-    fprintf('Super small numbers test complete\n\n')
 end
 
 function testOneByOneZeroValueMatrix()
@@ -95,9 +43,8 @@ function testOneByOneZeroValueMatrix()
     caught = 0;
     try
     A = zeros(1,1);
-    b = zeros(1,1);
     
-    x_calc = stage3(A, b);
+    upper = stage1(A);
     catch
         caught = 1;
     end
@@ -117,7 +64,7 @@ function testTenByTenZeroValueMatrix()
     A = zeros(10,10);
     b = zeros(10,1);
 
-    x_calc = stage3(A, b);
+    x_calc = stage2(A, b);
     catch
         caught = 1;
     end
@@ -140,7 +87,7 @@ function testCorrectXValuesReturned100x100()
         b = rand(100,1) .* 100;
         x = A\b;
 
-        x_calc = stage3(A, b);
+        x_calc = stage2(A, b);
 
         tolerance = 0.00000001;
         for row = 1:100
@@ -154,28 +101,6 @@ function testCorrectXValuesReturned100x100()
     fprintf('100x100 test passed\n\n')
 end
 
-function testMandatoryRowSwap()
-    fprintf('Beginning mandatory row swap test\n')
-    tic
-    % The following won't have a solution unless a row swap occurs:
-    A = [0, 0, 1; 1, 2, 3; 4, 5, 6];
-    % Row one will have to be moved to the bottom.
-    b = [4; 3; 2];
-    x = A\b;
-    
-    x_calc = stage3(A, b);
-    
-    tolerance = 0.00000001;
-    for row = 1:3
-      if abs(x(row)) - abs (x_calc(row)) > tolerance
-          error('Calculated incorrect solution');
-      end
-    end
-    
-    toc
-    fprintf('Mandatory row swap test complete\n\n')
-end
-
 function testPartialRankFails()
     fprintf('Beginning partial rank test\n')
     tic
@@ -183,10 +108,8 @@ function testPartialRankFails()
     caught = 0;
     try
         A = [1, 1, 1; 2.5, 2.5, 2.5; 4, 5, 6];
-        % Row one will have to be moved to the bottom.
-        b = [4; 3; 2];
 
-        stage3(A, b);
+        stage2(A, b);
     catch
         caught = 1;
     end
@@ -209,7 +132,7 @@ function testTwoByTwoMatrix()
         b = rand(2,1) .* 100;
         x = A\b;
 
-        x_calc = stage3(A, b);
+        x_calc = stage2(A, b);
 
         tolerance = 0.00000001;
         for row = 1:2
@@ -230,9 +153,8 @@ function testNxMFails()
     caught = 0;
     try
         A = zeros(5,4);
-        b = zeros(5,1);
         
-        stage3(A, b);
+        stage1(A);
     catch
         caught = 1;
     end
@@ -240,6 +162,38 @@ function testNxMFails()
     
     toc
     fprintf('NxM test passed\n\n')
+end
+
+function testSmallNumbersExampleFromLecture()
+    fprintf('Beginning small numbers test 1\n')
+    tic
+    A = [0.001, 0.995; -10.2, 1.00;];
+    
+    upper = stage1(A);
+    
+    assert(upper(1,1) == 1.0000e-03);
+    assert(upper(1,2) == 0.995000000000000);
+    assert(upper(2,1) == -1.776356839400251e-15);
+    assert(upper(2,2) == 1.015000000000000e+04);
+    
+    toc
+    fprintf('Small numbers test 1 complete\n\n')
+end
+
+function testSuperSmallNumbers()
+    fprintf('Beginning super small numbers test 2\n')
+    tic
+
+    A = [0.0000001, 0.00000995; -10.2, 1.00;];
+    
+    upper = stage1(A);
+    
+    assert(upper(1,1) == 1.000000000000000e-07);
+    assert(upper(1,2) == 9.950000000000000e-06);
+    assert(upper(2,1) == 0);
+    assert(upper(2,2) == 1.015900000000000e+03);
+    toc
+    fprintf('Super small numbers test 2 complete\n\n')
 end
 
 function testIncorrectSizeOfbFails()
@@ -250,7 +204,7 @@ function testIncorrectSizeOfbFails()
     try
         A = zeros(5,5);
         b = zeros(4,1);
-        stage3(A, b);
+        stage2(A, b);
     catch
         caught = 1;
     end
@@ -259,7 +213,7 @@ function testIncorrectSizeOfbFails()
     try
         A = zeros(5,5);
         b = zeros(7,1);
-        stage3(A, b);
+        stage2(A, b);
     catch
         caught = 1;
     end
@@ -278,7 +232,7 @@ function testNonRealNumbersInAFails()
         A = zeros(5,5);
         A(3,3) = 5i;
         b = zeros(5,1);
-        stage3(A, b);
+        stage2(A, b);
     catch
         caught = 1;
     end
@@ -297,7 +251,7 @@ function testNonRealNumbersInbFails()
         A = zeros(5,5);
         b = zeros(5,1);
         b(1) = 1i;
-        stage3(A, b);
+        stage2(A, b);
     catch
         caught = 1;
     end
@@ -321,7 +275,7 @@ function testRandomNByNTest()
         b = rand(size,1) .* 100;
         x = A\b;
 
-        x_calc = stage3(A, b);
+        x_calc = stage2(A, b);
 
         tolerance = 0.00000001;
         for row = 1:size
@@ -346,7 +300,7 @@ function testCorrectXValuesReturned1000x1000()
     b = rand(1000,1) .* 100;
     x = A\b;
 
-    x_calc = stage3(A, b);
+    x_calc = stage2(A, b);
 
     tolerance = 0.00000001;
     for row = 1:1000
@@ -357,4 +311,26 @@ function testCorrectXValuesReturned1000x1000()
     
     toc
     fprintf('1000x1000 test passed\n\n')
+end
+
+function testMandatoryRowSwap()
+    fprintf('Beginning mandatory row swap test 2\n')
+    tic
+    % The following won't have a solution unless a row swap occurs:
+    A = [1, 2, 3; 4, 1, 5; 3, 6, 9];
+    % Row one will have to be moved to the bottom.
+    b = [4; 3; 2];
+    x = A\b;
+    
+    x_calc = stage3(A, b);
+    
+    tolerance = 0.00000001;
+    for row = 1:3
+      if abs(x(row)) - abs (x_calc(row)) > tolerance
+          error('Calculated incorrect solution');
+      end
+    end
+    
+    toc
+    fprintf('Mandatory row swap test 2 complete\n\n')
 end
