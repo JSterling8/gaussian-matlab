@@ -37,10 +37,10 @@ function [ x ] = stage3( A, b )
         % Initialize mutator row number to the top possible column...
         mutator_row_number = column_inspecting;
 
-        % Pick the largest pivot/mutator at or below the existing 
-        % mutator_row_number
+        % Pick the largest magnitude pivot/mutator at or below the 
+        % existing mutator_row_number
         for row_inspecting = column_inspecting:row_count
-            if AUG(row_inspecting, column_inspecting) > AUG(mutator_row_number, column_inspecting)
+            if abs(AUG(row_inspecting, column_inspecting)) > abs(AUG(mutator_row_number, column_inspecting))
                mutator_row_number = row_inspecting;
             end
         end

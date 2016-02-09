@@ -28,7 +28,7 @@ function [ U ] = stage1( A )
         % Pick the largest pivot/mutator at or below the existing 
         % mutator_row_number
         for row_inspecting = mutator_row_number:row_count
-            if U(row_inspecting, column_inspecting) > U(mutator_row_number, column_inspecting)
+            if abs(U(row_inspecting, column_inspecting)) > abs(U(mutator_row_number, column_inspecting))
                mutator_row_number = row_inspecting;
             end
         end
