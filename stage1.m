@@ -1,6 +1,8 @@
 function [ U ] = stage1( A )
 %stage1 Converts a real, square matrix to upper echelon form
 %   Converts a real, square matrix to upper echelon form, if possible
+%
+%   By Jonathan Sterling - u1276062
 
     % Check that it's square
     dimensions = size(A);
