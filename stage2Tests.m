@@ -309,7 +309,7 @@ function testRandomNByNTest()
     tic
     
     for i = 1:100
-        size = floor(rand(1) * 100);
+        size = floor(rand(1) * 100) + 1;
 
         A = rand(size) .* 100;
         while rank(A) ~= size
@@ -323,6 +323,16 @@ function testRandomNByNTest()
         tolerance = 0.00000001;
         for row = 1:size
           if abs(x(row)) - abs (x_calc(row)) > tolerance
+              fprintf('Expected:')
+              x(row)
+              fprintf('Actual:')
+              x_calc(row)
+              fprintf('Test #: ')
+              i
+              fprintf('A:')
+              A
+              fprintf('b:')
+              b
               error('Calculated incorrect solution');
           end
         end

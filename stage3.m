@@ -10,6 +10,11 @@ function [ x ] = stage3( A, b )
     if dimensions(1,1) ~= dimensions(1,2)
         error('Input coefficient matrix is not square')
     end
+    
+    % Check that A is not empty
+    if(dimensions(1,1) == 0 || dimensions(1,2) == 0)
+        error('Input coefficient matrix is empty')
+    end
 
     % Check that b is the right size
     if length(b) ~= dimensions(1,1)
@@ -96,14 +101,14 @@ function [ x ] = stage3( A, b )
         end
     end
 
-    % Determine if matrix is full rank by calculating it's determinant (the
-    % product of its diagonal)
-    diagonal_product = 1;
-    for index = 1:row_count
-        diagonal_product = diagonal_product * AUG(index, index);
+    % If the last cell is 0, the last row is 0, and the matrix is rank
+    % deficient
+    rank_deficient = 0;
+    if AUG(row_count, column_count) == 0 
+        rank_deficient = 1;
     end
     
-    if diagonal_product == 0
+    if rank_deficient == 1
         error('Cannot solve.  Matrix does not have full rank')
     else
         fprintf('Matrix has full rank. Solving via back substitution.\n')

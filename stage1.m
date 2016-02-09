@@ -9,6 +9,11 @@ function [ U ] = stage1( A )
     if dimensions(1,1) ~= dimensions(1,2)
         error('Input matrix is not square')
     end
+    
+    % Check that A is not empty
+    if(dimensions(1,1) == 0 || dimensions(1,2) == 0)
+        error('Input matrix is empty')
+    end
 
     % Check that it's real
     for index = 1:numel(A)
@@ -82,14 +87,14 @@ function [ U ] = stage1( A )
         end
     end
 
-    % Determine if matrix is full rank by calculating it's determinant (the
-    % product of its diagonal)
-    diagonal_product = 1;
-    for index = 1:row_count
-        diagonal_product = diagonal_product * U(index, index);
+    % If the last cell is 0, the last row is 0, and the matrix is rank
+    % deficient
+    rank_deficient = 0;
+    if AUG(row_count, column_count) == 0 
+        rank_deficient = 1;
     end
     
-    if diagonal_product == 0
+    if rank_deficient == 1
         fprintf('Matrix does not have full rank \n')
     else
         fprintf('Matrix has full rank.\n')

@@ -309,7 +309,7 @@ function testRandomNByNTest()
     tic
     
     for i = 1:100
-        size = floor(rand(1) * 100);
+        size = floor(rand(1) * 100) + 1;
 
         A = rand(size) .* 100;
         while rank(A) ~= size
