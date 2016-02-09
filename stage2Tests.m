@@ -181,7 +181,6 @@ function testPartialRankFails()
     caught = 0;
     try
         A = [1, 1, 1; 2.5, 2.5, 2.5; 4, 5, 6];
-        % Row one will have to be moved to the bottom.
         b = [4; 3; 2];
 
         stage2(A, b);

@@ -69,9 +69,7 @@ end
 function testSuperSmallNumbers()
     fprintf('Beginning super small numbers test\n')
     tic
-    % The following won't have a solution unless a row swap occurs:
     A = [0.0000001, 0.00000995; -10.2, 1.00;];
-    % Row one will have to be moved to the bottom.
     b = [1; -50];
     x = A\b;
     
@@ -183,7 +181,6 @@ function testPartialRankFails()
     caught = 0;
     try
         A = [1, 1, 1; 2.5, 2.5, 2.5; 4, 5, 6];
-        % Row one will have to be moved to the bottom.
         b = [4; 3; 2];
 
         stage3(A, b);
