@@ -35,7 +35,7 @@ function testOneByOneMatrix()
 
         tolerance = 0.00000001;
         for row = 1:1
-          if abs(x(row)) - abs (x_calc(row)) > tolerance
+          if abs(x(row) - x_calc(row)) > tolerance
               error('Calculated incorrect solution');
           end
         end
@@ -48,7 +48,6 @@ end
 function testSmallNumbersExampleFromLecture()
     fprintf('Beginning small numbers test\n')
     tic
-
     A = [0.001, 0.995; -10.2, 1.00;];
     b = [1; -50];
     x = A\b;
@@ -57,7 +56,7 @@ function testSmallNumbersExampleFromLecture()
     
     tolerance = 0.00000001;
     for row = 1:2
-      if abs(x(row)) - abs (x_calc(row)) > tolerance
+      if abs(x(row) - x_calc(row)) > tolerance
           error('Calculated incorrect solution');
       end
     end
@@ -69,6 +68,7 @@ end
 function testSuperSmallNumbers()
     fprintf('Beginning super small numbers test\n')
     tic
+    
     A = [0.0000001, 0.00000995; -10.2, 1.00;];
     b = [1; -50];
     x = A\b;
@@ -77,7 +77,7 @@ function testSuperSmallNumbers()
     
     tolerance = 0.00000001;
     for row = 1:2
-      if abs(x(row)) - abs (x_calc(row)) > tolerance
+      if abs(x(row) - x_calc(row)) > tolerance
           error('Calculated incorrect solution');
       end
     end
@@ -142,7 +142,7 @@ function testCorrectXValuesReturned100x100()
 
         tolerance = 0.00000001;
         for row = 1:100
-          if abs(x(row)) - abs (x_calc(row)) > tolerance
+          if abs(x(row) - x_calc(row)) > tolerance
               error('Calculated incorrect solution');
           end
         end
@@ -165,7 +165,7 @@ function testMandatoryRowSwap()
     
     tolerance = 0.00000001;
     for row = 1:3
-      if abs(x(row)) - abs (x_calc(row)) > tolerance
+      if abs(x(row) - x_calc(row)) > tolerance
           error('Calculated incorrect solution');
       end
     end
@@ -210,7 +210,7 @@ function testTwoByTwoMatrix()
 
         tolerance = 0.00000001;
         for row = 1:2
-          if abs(x(row)) - abs (x_calc(row)) > tolerance
+          if abs(x(row) - x_calc(row)) > tolerance
               error('Calculated incorrect solution');
           end
         end
@@ -322,9 +322,9 @@ function testRandomNByNTest()
 
         tolerance = 0.00000001;
         for row = 1:size
-          if abs(x(row)) - abs (x_calc(row)) > tolerance
-              error('Calculated incorrect solution');
-          end
+            if abs(x(row) - x_calc(row)) > tolerance
+                error('Calculated incorrect solution');
+            end
         end
     end
     
@@ -346,8 +346,8 @@ function testCorrectXValuesReturned1000x1000()
     x_calc = stage3(A, b);
 
     tolerance = 0.00000001;
-    for row = 1:1000
-      if abs(x(row)) - abs (x_calc(row)) > tolerance
+    for element = 1:(numel(x_calc))
+      if abs(x(element) - x_calc(element)) > tolerance
           error('Calculated incorrect solution');
       end
     end

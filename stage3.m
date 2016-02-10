@@ -16,7 +16,8 @@ function [ x ] = stage3( A, b )
         error('Input coefficient matrix is empty')
     end
 
-    % Check that b is the right size
+    % Check that b is the right size (also checks that it's not empty,
+    % because A is not empty
     if length(b) ~= dimensions(1,1)
        error('Input values vector is not the correct size') 
     end
@@ -35,6 +36,8 @@ function [ x ] = stage3( A, b )
        end
     end
 
+    % Get our the row and column counts of A, then merge A and b into an
+    % augmented matrix called AUG
     row_count = dimensions(1,1);
     column_count = dimensions(1,2);
     AUG = [A,b];
@@ -44,8 +47,8 @@ function [ x ] = stage3( A, b )
         % Initialize mutator row number to the top possible column...
         mutator_row_number = column_inspecting;
 
-        % Pick the largest magnitude pivot/mutator at or below the 
-        % existing mutator_row_number
+        % Pick the largest pivot/mutator at or below the existing 
+        % mutator_row_number
         for row_inspecting = column_inspecting:row_count
             if abs(AUG(row_inspecting, column_inspecting)) > abs(AUG(mutator_row_number, column_inspecting))
                mutator_row_number = row_inspecting;
@@ -56,48 +59,47 @@ function [ x ] = stage3( A, b )
         if mutator_row_number == column_inspecting
             % Do nothing... It's already on the diagonal
         else 
+           % Put the mutator row into a temporary vector
            temp_A = AUG(mutator_row_number, :);
 
-           % Move diagonal row to old pivotal row
+           % Move row on the diagonal to the mutator row
            AUG(mutator_row_number, :) = AUG(column_inspecting, :);
 
-           % Move pivotal row to diagonal row
+           % Move the mutator row (stored in temp_A) so that the pivot is
+           % on the diagonal
            AUG(column_inspecting, :) = temp_A;
         end
 
         % Set the mutator_row_number to be the diagonal again
         mutator_row_number = column_inspecting;
 
-        % For each row from 2->n
-        for row_inspecting = 2:row_count     
-            % If the column we're looking at is under the diagonal
-            if column_inspecting < row_inspecting
-                % Make that cell 0 using the mutator row.
-                cell_value_in_current_row = AUG(row_inspecting, column_inspecting);
+        % For each row from under the mutator row
+        for row_inspecting = (mutator_row_number + 1):row_count     
+            % Make that cell 0 using the mutator row.
+            cell_value_in_current_row = AUG(row_inspecting, column_inspecting);
 
-                % If it's already 0, we don't have to do anything
-                if cell_value_in_current_row == 0
-                    continue
-                end
-
-                cell_value_in_mutator_row = AUG(mutator_row_number, column_inspecting);
-
-                % We can't divide by 0... This state *should* never happen
-                if cell_value_in_mutator_row == 0
-                    error('Not enough info to convert to upper echelon form.')
-                end
-
-                % Find out what we have to divide our mutator row by in order
-                % to create a 0 in the row/column inspecting
-                multiplication_factor = cell_value_in_current_row / cell_value_in_mutator_row;
-
-                % Create the transformed mutator rows, using our multiplication
-                % factor
-                mutator_row_A = AUG(mutator_row_number, :) .* multiplication_factor;
-
-                % Subtract our mutator row from the row we're inspecting
-                AUG(row_inspecting, :) = AUG(row_inspecting, :) - mutator_row_A;
+            % If it's already 0, we don't have to do anything
+            if cell_value_in_current_row == 0
+                continue
             end
+
+            cell_value_in_mutator_row = AUG(mutator_row_number, column_inspecting);
+
+            % We can't divide by 0... This state *should* never happen
+            if cell_value_in_mutator_row == 0
+                error('Not enough info to convert to upper echelon form.')
+            end
+
+            % Find out what we have to divide our mutator row by in order
+            % to create a 0 in the row/column inspecting
+            multiplication_factor = cell_value_in_current_row / cell_value_in_mutator_row;
+
+            % Create the transformed mutator rows, using our multiplication
+            % factor
+            mutator_row_A = AUG(mutator_row_number, :) .* multiplication_factor;
+
+            % Subtract our mutator row from the row we're inspecting
+            AUG(row_inspecting, :) = AUG(row_inspecting, :) - mutator_row_A;
         end
     end
 

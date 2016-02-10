@@ -53,37 +53,34 @@ function [ U ] = stage1( A )
         mutator_row_number = column_inspecting;
 
         % For each row from 2->n
-        for row_inspecting = 2:row_count
-            % If the column we're looking at is under the diagonal
-            if column_inspecting < row_inspecting
-                % Make that cell 0 using the mutator row.  As long as we use
-                % a row above the current row, we'll never unset a 0
-                % in a previous column
-                cell_value_in_current_row = U(row_inspecting, column_inspecting);
+        for row_inspecting = (mutator_row_number + 1):row_count
+            % Make that cell 0 using the mutator row.  As long as we use
+            % a row above the current row, we'll never unset a 0
+            % in a previous column
+            cell_value_in_current_row = U(row_inspecting, column_inspecting);
 
-                % If it's already 0, we don't have to do anything
-                if cell_value_in_current_row == 0
-                    continue
-                end
-
-                cell_value_in_mutator_row = U(mutator_row_number, column_inspecting);
-
-                % We can't divide by 0... This state *should* never happen
-                if cell_value_in_mutator_row == 0
-                    error('Not enough info to convert to upper echelon form.')
-                end
-
-                % Find out what we have to divide our mutator row by in order
-                % to create a 0 in the row/column inspecting
-                multiplication_factor = cell_value_in_current_row / cell_value_in_mutator_row;
-
-                % Create the transformed mutator row, using our multiplication
-                % factor
-                mutator_row = U(mutator_row_number, :) .* multiplication_factor;
-
-                % Subtract our mutator row from the row we're inspecting
-                U(row_inspecting, :) = U(row_inspecting, :) - mutator_row;
+            % If it's already 0, we don't have to do anything
+            if cell_value_in_current_row == 0
+                continue
             end
+
+            cell_value_in_mutator_row = U(mutator_row_number, column_inspecting);
+
+            % We can't divide by 0... This state *should* never happen
+            if cell_value_in_mutator_row == 0
+                error('Not enough info to convert to upper echelon form.')
+            end
+
+            % Find out what we have to divide our mutator row by in order
+            % to create a 0 in the row/column inspecting
+            multiplication_factor = cell_value_in_current_row / cell_value_in_mutator_row;
+
+            % Create the transformed mutator row, using our multiplication
+            % factor
+            mutator_row = U(mutator_row_number, :) .* multiplication_factor;
+
+            % Subtract our mutator row from the row we're inspecting
+            U(row_inspecting, :) = U(row_inspecting, :) - mutator_row;
         end
     end
 
