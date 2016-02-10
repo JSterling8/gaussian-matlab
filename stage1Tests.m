@@ -90,8 +90,8 @@ function testCorrectXValuesReturned100x100()
         x_calc = stage2(A, b);
 
         tolerance = 0.00000001;
-        for row = 1:100
-          if abs(x(row)) - abs (x_calc(row)) > tolerance
+        for element = 1:(numel(x_calc))
+          if abs(x(element) - x_calc(element)) > tolerance
               error('Calculated incorrect solution');
           end
         end
@@ -135,8 +135,8 @@ function testTwoByTwoMatrix()
         x_calc = stage2(A, b);
 
         tolerance = 0.00000001;
-        for row = 1:2
-          if abs(x(row)) - abs (x_calc(row)) > tolerance
+        for element = 1:(numel(x_calc))
+          if abs(x(element) - x_calc(element)) > tolerance
               error('Calculated incorrect solution');
           end
         end
@@ -278,8 +278,8 @@ function testRandomNByNTest()
         x_calc = stage2(A, b);
 
         tolerance = 0.00000001;
-        for row = 1:size
-          if abs(x(row)) - abs (x_calc(row)) > tolerance
+        for element = 1:(numel(x_calc))
+          if abs(x(element) - x_calc(element)) > tolerance
               error('Calculated incorrect solution');
           end
         end
@@ -303,8 +303,8 @@ function testCorrectXValuesReturned1000x1000()
     x_calc = stage2(A, b);
 
     tolerance = 0.00000001;
-    for row = 1:1000
-      if abs(x(row)) - abs (x_calc(row)) > tolerance
+    for element = 1:(numel(x_calc))
+      if abs(x(element) - x_calc(element)) > tolerance
           error('Calculated incorrect solution');
       end
     end
@@ -325,8 +325,8 @@ function testMandatoryRowSwap()
     x_calc = stage3(A, b);
     
     tolerance = 0.00000001;
-    for row = 1:3
-      if abs(x(row)) - abs (x_calc(row)) > tolerance
+    for element = 1:(numel(x_calc))
+      if abs(x(element) - x_calc(element)) > tolerance
           error('Calculated incorrect solution');
       end
     end
