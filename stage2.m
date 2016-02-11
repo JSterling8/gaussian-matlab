@@ -96,10 +96,10 @@ function [ x ] = stage2( A, b )
 
             % Create the transformed mutator rows, using our multiplication
             % factor
-            mutator_row_A = AUG(mutator_row_number, :) .* multiplication_factor;
+            mutator_row = AUG(mutator_row_number, :) .* multiplication_factor;
 
             % Subtract our mutator row from the row we're inspecting
-            AUG(row_inspecting, :) = AUG(row_inspecting, :) - mutator_row_A;
+            AUG(row_inspecting, :) = AUG(row_inspecting, :) - mutator_row;
         end
     end
 
