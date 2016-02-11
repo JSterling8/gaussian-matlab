@@ -15,6 +15,7 @@ function tests = stage3Tests
     testPartialRankFails();
     testTwoByTwoMatrix();
     testRandomNByNTest();
+    test100x100WithLargeNumbers();
     testCorrectXValuesReturned1000x1000();
     fprintf('All tests passed!\n\n')
 end
@@ -330,6 +331,32 @@ function testRandomNByNTest()
     
     toc
     fprintf('Random NxN test passed\n\n')
+end
+
+function test100x100WithLargeNumbers()
+    fprintf('Beginning 100x100 large numbers test.  Will test with 10 random 100x100 matrices\n')
+    tic
+    
+    for i = 1:10
+        A = rand(100) .* 100000000;
+        while rank(A) ~= 100 || cond(A) > 10^4
+            A = rand(100) .* 100000000;
+        end
+        b = rand(100,1) .* 100000000;
+        x = A\b;
+
+        x_calc = stage3(A, b);
+
+        tolerance = 0.00000001;
+        for element = 1:(numel(x_calc))
+          if abs(x(element) - x_calc(element)) > tolerance
+              error('Calculated incorrect solution');
+          end
+        end
+    end
+    
+    toc
+    fprintf('100x100 large numbers test passed\n\n')
 end
 
 function testCorrectXValuesReturned1000x1000()
