@@ -11,7 +11,7 @@ function [ U ] = stage1( A )
     end
     
     % Check that A is not empty
-    if(dimensions(1,1) == 0 || dimensions(1,2) == 0)
+    if dimensions(1,1) == 0
         error('Input matrix is empty')
     end
 
@@ -52,7 +52,7 @@ function [ U ] = stage1( A )
         % Set the mutator_row_number to be the diagonal again
         mutator_row_number = column_inspecting;
 
-        % For each row from 2->n
+        % For each row under the mutator row
         for row_inspecting = (mutator_row_number + 1):row_count
             % Make that cell 0 using the mutator row.  As long as we use
             % a row above the current row, we'll never unset a 0
@@ -87,7 +87,7 @@ function [ U ] = stage1( A )
     % If the last cell is 0, the last row is 0, and the matrix is rank
     % deficient
     rank_deficient = 0;
-    if AUG(row_count, column_count) == 0 
+    if U(row_count, column_count) == 0 
         rank_deficient = 1;
     end
     

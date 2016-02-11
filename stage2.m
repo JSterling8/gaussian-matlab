@@ -73,7 +73,7 @@ function [ x ] = stage2( A, b )
         % Set the mutator_row_number to be the diagonal again
         mutator_row_number = column_inspecting;
 
-        % For each row from under the mutator row
+        % For each row under the mutator row
         for row_inspecting = (mutator_row_number + 1):row_count     
             % Make that cell 0 using the mutator row.
             cell_value_in_current_row = AUG(row_inspecting, column_inspecting);
