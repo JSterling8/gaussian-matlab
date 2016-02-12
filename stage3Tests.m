@@ -70,7 +70,7 @@ function testSuperSmallNumbers()
     fprintf('Beginning super small numbers test\n')
     tic
     
-    A = [0.0000001, 0.00000995; -10.2, 1.00;];
+    A = [0.0000001, 0.0000995; -10.2, 1.00;];
     b = [1; -50];
     x = A\b;
     

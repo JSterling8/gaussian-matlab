@@ -1,5 +1,5 @@
 function [ x ] = stage3( A, b )
-%stage1 Solves for x in equation Ax = b
+%stage3 Solves for x in equation Ax = b
 %   Returns a solution vector given a coefficient matrix and
 %   right-hand-side values
 %
@@ -50,7 +50,8 @@ function [ x ] = stage3( A, b )
         % Pick the largest pivot/mutator at or below the existing 
         % mutator_row_number
         for row_inspecting = column_inspecting:row_count
-            if abs(AUG(row_inspecting, column_inspecting)) > abs(AUG(mutator_row_number, column_inspecting))
+            if abs(AUG(row_inspecting, column_inspecting)) >...
+                    abs(AUG(mutator_row_number, column_inspecting))
                mutator_row_number = row_inspecting;
             end
         end
@@ -75,7 +76,7 @@ function [ x ] = stage3( A, b )
 
         % For each row under the mutator row
         for row_inspecting = (mutator_row_number + 1):row_count     
-            % Make that cell 0 using the mutator row.
+            % Zero the current row/column's cell using the mutator row.
             cell_value_in_current_row = AUG(row_inspecting, column_inspecting);
 
             % If it's already 0, we don't have to do anything
@@ -90,11 +91,11 @@ function [ x ] = stage3( A, b )
                 error('Not enough info to convert to upper echelon form.')
             end
 
-            % Find out what we have to divide our mutator row by in order
+            % Find out what we have to multiply our mutator row by in order
             % to create a 0 in the row/column inspecting
             multiplication_factor = cell_value_in_current_row / cell_value_in_mutator_row;
 
-            % Create the transformed mutator rows, using our multiplication
+            % Create the transformed mutator row, using our multiplication
             % factor
             mutator_row = AUG(mutator_row_number, :) .* multiplication_factor;
 
@@ -129,12 +130,14 @@ function [ x ] = stage3( A, b )
         column_index = row_solving + 1;
         
         while column_index <= column_count
-            value_of_row_after_unknown = value_of_row_after_unknown + (AUG(row_solving, column_index) * x(column_index));
+            value_of_row_after_unknown = value_of_row_after_unknown + ...
+                (AUG(row_solving, column_index) * x(column_index));
 
             column_index = column_index + 1;
         end
 
-        x(row_solving) = (AUG(row_solving, column_count + 1) - value_of_row_after_unknown) / AUG(row_solving, row_solving);
+        x(row_solving) = (AUG(row_solving, column_count + 1) - value_of_row_after_unknown)...
+            / AUG(row_solving, row_solving);
 
         row_solving = row_solving - 1;
     end
